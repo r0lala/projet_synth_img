@@ -1,31 +1,28 @@
-# OpenGLTemplate
+# Light Corridor
 
-Welcome !
+## Notre Projet
 
-This is a small template for starting new project with openGL.
+Nous avons 
 
-## Compiling
+## Fonctionnalités
 
-You need to install [CMake](https://cmake.org/download/).
+blablabla
 
-To use CMake I recommend this VS Code extension : [ms-vscode.cmake-tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools). You will need to setup the extension with a compiler. Here is [the tutorial](https://code.visualstudio.com/docs/cpp/cmake-linux). It is based on Linux but at the bottom of the page you will find the explanations to adapt it for [Windows](https://code.visualstudio.com/docs/cpp/config-msvc) and [Mac](https://code.visualstudio.com/docs/cpp/config-clang-mac).
+## Difficultés
 
-Alternatively you can just create a *build* folder at the root of this project, open a terminal and run `cmake ..` ; chances are it will detect what compiler you have installed and generate the appropriate Makefile / Visual Studio solution / Xcode project.
+Matériel : 
+- Quelques difficultés à utiliser GitHub et mettre en place les fichiers sur le repo.
 
-## main.cpp
+- Nous ne travaillons pas avec les mêmes installations et à cause de soucis avec GitHub, nous avons mis du temps avant de pouvoir rejoindre les codes que nous avions fait séparément. De plus, nous n'avions pas nécessairement utilisé les mêmes paramètres (axe x,y,z // placement de la caméra // ...). De ce fait, certaines parties du code faites par l'une n'ont finalement pas pu être utilisées.
 
-In here we initialize [*glfw*](https://www.glfw.org/docs/latest/) (the library that handles the window and user inputs), create a window and then start the app. You don't really need to modify this file, except to change your window name or initial size.
+- Malgré de nombreuses tentatives, OpenGL ne fonctionne pas sur l'ordinateur de Romane, elle a été obligé de travailler sur les machines de l'université. Malheureusement, à cause des cours, partiels, disponibilité de la salle et autres projets, elle n'a pas toujours pu se rendre sur place pour travailler sur ce projet.
 
-## User inputs
+Code :
+- Pour les obstacles, nous avions essayé de faire une fonction qui afficherait un obstable au hasard parmi les obstacles créés. Néanmoins, comme la fenêtre reload à chaque passage de boucle, cela relançait la fonction aléatoire ce qui faisait apparaître les obstables de façon sporadique très rapide. Il aurait fallut stocker l'obstacle obtenu dans une variable mais nous ne savions pas comment réutiliser cette variable pour garder l'obstacle.
 
-To learn more about the parameters you receive in the callbacks, read [glfw's documentation](https://www.glfw.org/docs/latest/input_guide.html).
+- Lorsque l'utilisateur agrandit la fenêtre de jeu, la raquette n'est plus tout à fait au même endroit que la souris de l'utiisateur. Elle continue de suivre la trajectoire du curseur mais il y a un décalage entre les deux.
 
-## App
 
-This is the actual root of your project. This is where your drawing code should go, as well as handling inputs from the user.
+## Spéciale dédicace
 
-## Assets
-
-As the asset paths are relative to the executable, we have two options: copy the asset folder next to the executable or use cmake's tricks to get the absolute project path to reference our assets.
-
- I chose the second option for my example (tips found [here](https://shot511.github.io/2018-05-29-how-to-setup-opengl-project-with-cmake/#:~:text=link_directories(%24%7BCMAKE_SOURCE_DIR%7D/lib)-,Resources,-Every%20OpenGL%20project))
+Merci Enguerrand pour le template, on aurait sûrement rien rendu sans ça.
