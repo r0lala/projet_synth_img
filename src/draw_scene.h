@@ -16,15 +16,11 @@ void drawCarre();
 
 void drawPan();
 
-void drawTunnel(); 
-
 void drawCadre(); 
 
 void draw(); 
 
 void setupCamera(); 
-
-void drawLongTunnel(); 
 
 void drawRectangle(); 
 
@@ -33,3 +29,22 @@ void drawSquare();
 void drawRaquette(); 
 
 void drawCube(); 
+
+void drawRaquette(); 
+
+void drawSphere(); 
+
+void drawSquare(); 
+
+void drawBloc1(); 
+
+void drawBloc2();
+
+void drawBloc3();
+
+void drawBloc4();
+
+void obstacle(); 
+
+
+

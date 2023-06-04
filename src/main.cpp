@@ -7,12 +7,17 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "3D_tools.h"
 #include "draw_scene.h"
-#include<time.h>
+#include "tunnel.h"
+#include <time.h>
+#include "stb_image.h"
+
 
 #define NUM_FACES 6
 #define NUM_VERTICES 4
 #define NUM_TURNS 20
 #define FACE_SIZE 2.0f
+
+
 
 /* Window properties */
 static const unsigned int WINDOW_WIDTH = 1000;
@@ -27,6 +32,7 @@ static const double FRAMERATE_IN_SECONDS = 1. / 30.;
 /* IHM flag */
 static int flag_animate_rot_scale = 0;
 static int flag_animate_rot_arm = 0;
+
 
 /* Error handling function */
 void onError(int error, const char* description)
@@ -46,117 +52,73 @@ void onWindowResized(GLFWwindow* window, int width, int height)
 }
 
 
+
+int sphereMoving  = 0; // 0:immobile et 1:mouvement
+
+//int menuActive = 1; /*1: actif, 0: inactif*/ 
+
 void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	if (action == GLFW_PRESS) {
-		switch(key) {
-			case GLFW_KEY_A :
-			case GLFW_KEY_ESCAPE :
-				glfwSetWindowShouldClose(window, GLFW_TRUE);
-				break;
-			case GLFW_KEY_L :
-				glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-				break;
-			case GLFW_KEY_P :
-				glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-				break;
-			case GLFW_KEY_R :
-				flag_animate_rot_arm = 1-flag_animate_rot_arm;
-				break;
-			case GLFW_KEY_T :
-				flag_animate_rot_scale = 1-flag_animate_rot_scale;
-				break;
-			case GLFW_KEY_KP_9 :
-				if(dist_zoom<100.0f) dist_zoom*=1.1;
-				printf("Zoom is %f\n",dist_zoom);
-				break;
-			case GLFW_KEY_KP_3 :
-				if(dist_zoom>1.0f) dist_zoom*=0.9;
-				printf("Zoom is %f\n",dist_zoom);
-				break;
-			case GLFW_KEY_UP :
-				if (phy>2) phy -= 2;
-				printf("Phy %f\n",phy);
-				break;
-			case GLFW_KEY_DOWN :
-				if (phy<=88.) phy += 2;
-				printf("Phy %f\n",phy);
-				break;
-			case GLFW_KEY_LEFT :
-				theta -= 5;
-				break;
-			case GLFW_KEY_RIGHT :
-				theta += 5;
-				break;
-			default: fprintf(stdout,"Touche non gérée (%d)\n",key);
-		}
-	}
+    if (action == GLFW_PRESS) {
+        switch(key) {
+            case GLFW_KEY_SPACE:
+                sphereMoving = 1; // Inverse l'état de déplacement de la sphère
+                break;
+        }
+    }
 }
 
 	/* Variables pour stocker la position de la souris */
 	double mouseX, mouseY;
 
-	/* Gestionnaire d'événements pour la souris */
-	void mouse_callback(GLFWwindow* window, double xpos, double ypos)
-	{
-		mouseX = xpos;
-		mouseY = ypos;
-	}
-
-
-	float pos_x = -6.0;
-	float pos_y = 0; 
-	float pos_z = 0;  
-	float square_pos_x =0; 
-	float square_pos_y = 0;
-	float square_pos_z =2.6;  
-	float square_size = 0.1; 
-	float radius = 1.0; 
-
-//test Collision entre la raquette et la sphère 
-/*void Collision() 
+/* Gestionnaire d'événements pour la souris */
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    // Efface le buffer de couleur et le buffer de profondeur
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	mouseX = xpos;
+	mouseY = ypos;
+}
 
-    // Définit la position de la caméra
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    setCamera();
-
-    // Dessine le carré
-    glPushMatrix();
-    glTranslatef(0.0f, 0.0f, -5.0f);
-    drawSquare();
-    glPopMatrix();
-
-    // Dessine la sphère
-	static float speed = 0.0f;
-        speed += 0.04f;
-		glTranslatef(speed, 0., 0.);
-
-	glColor3f(1.0f, 0.0f, 0.0f); 
-    glPushMatrix();
-    glTranslatef(pos_x, pos_y, pos_z);
-	glScalef(0.2,0.2,0.2);
-    drawSphere();
-    glPopMatrix();
+float spherePosition = 0.0f;
 
 
-    // Gestion de la collision avec le carré
-    if (pos_x + radius > square_pos_x - square_size && pos_x - radius < square_pos_x + square_size &&
-        pos_y + radius > square_pos_y - square_size && pos_y - radius < square_pos_y + square_size)
+float racketPosition = 0.0f;
+
+void onMouseButton(GLFWwindow* window, int button, int action, int mods)
+{
+	//Gestion raquette
+   
+	 if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
     {
-        speed = -speed; // Inverse la direction de la sphère en x
+        // Avancer la raquette sur l'axe z
+        racketPosition -= 0.1f; // Mettez à jour la valeur selon la distance souhaitée
+    }
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+    {
+        // Avancer la raquette sur l'axe z
+        racketPosition += 0.1f; // Mettez à jour la valeur selon la distance souhaitée
     }
 
-    // Déplace la sphère
-    pos_x += speed;
-    pos_y += speed;
+	//gestion Menu 
+	/*if (action == GLFW_PRESS) {
+        double xpos, ypos;
+        glfwGetCursorPos(window, &xpos, &ypos);
+        
+        if (menuActive) {
+            // Vérifiez si le clic se situe dans la zone de l'option "Jouer"
+            if (xpos >= 200 && xpos <= 400 && ypos >= 200 && ypos <= 250) {
+                menuActive = 0; // Désactive le menu
+                // Ajoutez ici votre code pour lancer le jeu
+            }
+            
+            // Vérifiez si le clic se situe dans la zone de l'option "Quitter"
+            if (xpos >= 200 && xpos <= 400 && ypos >= 300 && ypos <= 350) {
+                glfwSetWindowShouldClose(window, GLFW_TRUE); // Ferme la fenêtre
+            }
+        }
+    }*/
+}
 
-    // Échange la mémoire du front et du back buffer
-    glFinish();
-}*/
+
 
 
 
@@ -165,6 +127,8 @@ int main(int argc, char** argv)
 	/* GLFW initialisation */
 	GLFWwindow* window;
 	if (!glfwInit()) return -1;
+
+
 
 	/* Callback to a function if an error is rised by GLFW */
 	glfwSetErrorCallback(onError);
@@ -187,14 +151,20 @@ int main(int argc, char** argv)
 	onWindowResized(window,WINDOW_WIDTH,WINDOW_HEIGHT);
 
 	glPointSize(5.0);
+
 	glEnable(GL_DEPTH_TEST);
 
 	/* Initialiser le gestionnaire d'événements pour la souris */
     glfwSetCursorPosCallback(window, mouse_callback);
 
+	glfwSetMouseButtonCallback(window, onMouseButton);
+
+	glEnable(GL_LIGHTING);
+
+
 
 	/* Loop until the user closes the window */
-	while (!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose(window)) 
 	{
 		/* Get time (in second) at loop beginning */
 		double startTime = glfwGetTime();
@@ -209,6 +179,17 @@ int main(int argc, char** argv)
 		glLoadIdentity();
 		setupCamera();
 
+		/*if (menuActive) {
+            // Dessinez le menu
+    
+            // Écoutez les clics de souris
+            glfwSetMouseButtonCallback(window, onMouseButton);
+        }
+        else {
+            // Dessinez le jeu
+            // ...
+        }*/
+
 		/* Scene rendering */
 		//drawFrame();
 
@@ -216,32 +197,51 @@ int main(int argc, char** argv)
 		drawLongTunnel(); 
 		glPopMatrix(); 
 
+
 		// Dessin de la raquette 
-		/* Mettre à jour les transformations */
+
+		/* Mettre à jour les transformations de la raquette*/
+
+		
 		glPushMatrix();
 		glColor3f(0.,1.,0.);
 		glRotatef(90., 0.,1.,0.);
-		glTranslatef(0., 0., 2.6);
+		glTranslatef(0., 0., 2.6); 
 		glScalef(0.09,0.09,0.09);
-		glTranslatef((mouseX - WINDOW_WIDTH/2) * 0.001, -(mouseY - WINDOW_HEIGHT/2) * 0.001, 0.); // déplacer horizontalement en fonction de la position de la souris
+		glTranslatef((mouseX - WINDOW_WIDTH/2) * 0.001, -(mouseY - WINDOW_HEIGHT/2) * 0.001, racketPosition); // déplacer horizontalement et verticalement en fonction de la position de la souris
 		drawSquare();
 		glPopMatrix();
 		
-		//Positionnement de la sphère
-		static float x = 0.0f;
-        x += 0.04f;
-		glTranslatef(x, 0., 0.);
 
-		//Dessin de la sphère 
+		//Gestion sphère 
 
-		glColor3f(1.0f, 0.0f, 0.0f); 
-        glPushMatrix();
-        glTranslatef(-6.0f, 0.0f, 0.0f); // positionner la sphère au centre du tunnel
-		glScalef(0.2,0.2,0.2);
-        drawSphere();
-        glPopMatrix();
+		//Mouvement sphere quand clique droit 
+		if (sphereMoving)
+		{
+			// Mettre à jour la position de la sphère
+			spherePosition -= 0.01f; // Mettez à jour la valeur selon la vitesse souhaitée
+			glEnable(GL_LIGHT1);
+		}
+        else
+        {
+            glDisable(GL_LIGHT1);
+        }
 
-		//Collision(); 
+		// Dessiner la sphère à la nouvelle position
+		glPushMatrix();
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glRotatef(90., 0., 1., 0.);
+		glTranslatef(0., 0., 2.6 + spherePosition);
+		glScalef(0.01, 0.01, 0.01);
+		drawSphere();
+		glPopMatrix();
+
+
+	
+		//Positionnement aléatoire des obstacles 
+		//obstacle(); 
+
+
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
