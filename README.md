@@ -26,7 +26,6 @@ Les obstacles peuvent apparaître à 4 positions différentes :
 - rectangle vertical côté gauche du couloir (éloigné)
 
 
-
 ## Difficultés
 
 Matériel : 
@@ -39,9 +38,11 @@ Matériel :
 Code :
 - Pour les obstacles, nous avions essayé de faire une fonction qui afficherait un obstable au hasard parmi les obstacles créés. Néanmoins, comme la fenêtre reload à chaque passage de boucle, cela relançait la fonction aléatoire ce qui faisait apparaître les obstables de façon sporadique très rapide. Il aurait fallut stocker l'obstacle obtenu dans une variable mais nous ne savions pas comment réutiliser cette variable pour garder l'obstacle.
 
-- Lorsque l'utilisateur agrandit la fenêtre de jeu, la raquette n'est plus tout à fait au même endroit que la souris de l'utiisateur. Elle continue de suivre la trajectoire du curseur mais il y a un décalage entre les deux.
+- Lorsque l'utilisateur agrandit la fenêtre de jeu, la raquette n'est plus tout à fait au même endroit que la souris de l'utilisateur. Elle continue de suivre la trajectoire du curseur mais il y a un décalage entre les deux.
 
-- Pour la création du menu, nous ne savions pas trop comment nous y prendre. Lilou avait commencé à faire quelques essais en essayant de récupérer la position de la souris au moment du clic pour déterminer si la personne veut "Jouer" ou "Quitter" ; mais finalement, nous avons pensé qu'il serait plus simple d'afficher une image avec des instructions et en fonction celle-ci, définir une action pour un bouton (J pour Jouer, ESCAPE pour quitter).
+- Pour la création du menu, nous ne savions pas trop comment nous y prendre. Lilou avait commencé à faire quelques essais en essayant de récupérer la position de la souris au moment du clic pour déterminer si la personne veut "Jouer" ou "Quitter" ; mais finalement, nous avons pensé qu'il serait plus simple d'afficher une image avec des instructions et en fonction celles-ci, définir une action pour un bouton (J pour Jouer, ESCAPE pour quitter).
+
+- À l'origine, nous voulions que la trajectoire de la balle au premier lancer soit aléatoire mais nous n'y sommes pas parvenu. Nous avons donc pensé à faire un premier lancer droit qui frapperait un obstacle présent au milieu du couloir et qui permettrait de donner une direction à la balle.
 
 
 ## Spéciale dédicace
