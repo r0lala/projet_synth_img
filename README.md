@@ -2,11 +2,27 @@
 
 ## Notre Projet
 
-Light Corridor est un jeu dans lequel le joueur possède une raquette avec laquelle il doit renvoyer une 
+Light Corridor est un jeu dans lequel le joueur avance dans un tunnel avec une raquette. Il doit renvoyer une balle qui rebondit sur les murs alors que des obstacles (d'autres murs) viennent entraver ça progression et renvoyer la balle sur lui.
 
 ## Fonctionnalités
 
-blablabla
+### Menu : 
+- press J : l'image se ferme et le jeu se lance
+- press ESCAPE : la fenêtre se ferme
+
+### Dans le Jeu : 
+Commandes du joueur :
+- clique gauche de la souris : la raquette avance
+- clique droit de la souris : la raquette recule 
+- clique barre ESPACE : lance la balle 
+
+Obstacles : 
+Les obstacles peuvent apparaître à 4 positions différentes : 
+- rectangle horizontal dans l'angle inférieur gauche
+- rectangle vertical côté droit du couloir (éloigné)
+- rectangle vertical côté droit du couloir (rapproché)
+- rectangle vertical côté gauche du couloir (éloigné)
+
 
 ## Difficultés
 
@@ -22,7 +38,7 @@ Code :
 
 - Lorsque l'utilisateur agrandit la fenêtre de jeu, la raquette n'est plus tout à fait au même endroit que la souris de l'utiisateur. Elle continue de suivre la trajectoire du curseur mais il y a un décalage entre les deux.
 
-- Pour la création du menu, nous ne savions pas trop comment nous y prendre. Lilou avait commencé à faire quelques essais en essayant de récupérer la position de la souris au moment du clic pour déterminer si la personne veut "Jouer" ou "Quitter" ; mais finalement, nous avons pnesé qu'il serait plus simple d'afficher une image avec des instructions et en fonction de définir une action pour un bouton (J pour Jouer, ESCAPE pour quitter). Néanmoins, nous avons eu des soucis avec l'utilisation de stbi_load.
+- Pour la création du menu, nous ne savions pas trop comment nous y prendre. Lilou avait commencé à faire quelques essais en essayant de récupérer la position de la souris au moment du clic pour déterminer si la personne veut "Jouer" ou "Quitter" ; mais finalement, nous avons pensé qu'il serait plus simple d'afficher une image avec des instructions et en fonction celle-ci, définir une action pour un bouton (J pour Jouer, ESCAPE pour quitter).
 
 
 ## Spéciale dédicace
