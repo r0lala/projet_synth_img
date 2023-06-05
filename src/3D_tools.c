@@ -50,6 +50,9 @@ void drawCone() {
 	glEnd();
 }
 
-void drawSphere() {
+void drawSphere() 
+{
+	glEnable(GL_LIGHTING);
 	gluSphere(gluNewQuadric(),1.0,NB_SEG_CIRCLE,NB_SEG_CIRCLE);
+	glDisable(GL_LIGHTING);
 }

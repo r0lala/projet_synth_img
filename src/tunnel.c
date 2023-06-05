@@ -1,6 +1,9 @@
 #include "draw_scene.h"
 #include "3D_tools.h"
+#include "obstacles.h"
 #include <math.h>
+#include <stdlib.h>
+#include <time.h>
 
 #define NUM_FACES 6
 #define NUM_VERTICES 4

@@ -1,12 +1,17 @@
 #include "draw_scene.h"
 #include "3D_tools.h"
 #include <math.h>
+#include <stdlib.h>
 
 #define NUM_FACES 6
 #define NUM_VERTICES 4
 #define NUM_TURNS 20
 #define FACE_SIZE 2.0f
 #define SQUARE_SIZE 0.5f
+
+static const unsigned int WINDOW_WIDTH = 1000;
+static const unsigned int WINDOW_HEIGHT = 1000;
+
 
 
 void drawFrame()
@@ -26,76 +31,6 @@ void drawFrame()
 
     glEnd(); 
 }
-
-
-//Dessine une portion de Tunnel
-void drawTunnel() {
-
-    glPushMatrix();
-    glTranslatef(-FACE_SIZE / 2.0f, 0.0f, 0.0f);
-
-    glBegin(GL_QUADS);
-
-    for (int i = 0; i < NUM_TURNS; i++) {
-        float x1 = i * FACE_SIZE / NUM_TURNS;
-        float x2 = (i + 1) * FACE_SIZE / NUM_TURNS;
-        float y1 = -FACE_SIZE / 2.0f;
-        float y2 = FACE_SIZE / 2.0f;
-        float z1 = -FACE_SIZE / 2.0f;
-        float z2 = FACE_SIZE / 2.0f;
-
-        for (int j = 0; j < NUM_FACES; j++) {
-            switch (j) {
-                case 0:
-                    glColor3f(0.0f, 0.0f, 0.8f); // Rouge
-                    glVertex3f(x2, y2, z1);
-                    glVertex3f(x2, y1, z1);
-                    glVertex3f(x1, y1, z1);
-                    glVertex3f(x1, y2, z1);
-                    break;
-                case 1:
-                    glColor3f(0.0f, 0.0f, 0.8f); // Vert
-                    glVertex3f(x1, y2, z2);
-                    glVertex3f(x1, y1, z2);
-                    glVertex3f(x2, y1, z2);
-                    glVertex3f(x2, y2, z2);
-                    break;
-                case 2:
-                    glColor3f(0.0f, 0.0f, 1.0f); // Magenta
-                    glVertex3f(x2, y1, z1);
-                    glVertex3f(x2, y1, z2);
-                    glVertex3f(x1, y1, z2);
-                    glVertex3f(x1, y1, z1);
-                    break;
-                case 3:
-                    glColor3f(0.0f, 0.0f, 1.0f); // Cyan
-                    glVertex3f(x1, y2, z1);
-                    glVertex3f(x1, y2, z2);
-                    glVertex3f(x2, y2, z2);
-                    glVertex3f(x2, y2, z1);
-                    break;
-            }
-        }
-    }
-
-    glEnd();
-    glPopMatrix();
-}
-
-
-//Dessine la totalité du Tunnel 
-void drawLongTunnel()
-{
-    drawTunnel();
-    int i; 
-    for(i=1; i<6; i++)
-    {
-        glPushMatrix();
-		glTranslatef(-i*FACE_SIZE, 0., 0.); 
-		drawTunnel(); 
-    }
-}
-
 
 void drawCube() {
     // Face 1
@@ -150,57 +85,40 @@ void drawRectangle()
     glEnd();
 }
 
-void drawRaquette()
+/* Light properties */
+GLfloat sphere_light_position[] = {0.0f, 0.0f, 0.0f, 1.0f};
+GLfloat sphere_light_ambient[] = {0.2f, 0.2f, 0.2f, 1.0f};
+GLfloat sphere_light_diffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
+GLfloat sphere_light_specular[] = {1.0f, 1.0f, 1.0f, 1.0f};
+
+GLfloat light_position[] = { 2.7f, 0.0f, 0.0f, 1.0f };   // Position de la source de lumière
+GLfloat light_ambient[] = { 0.2f, 0.2f, 0.2f, 1.0f };    // Composante ambiante de la lumière
+GLfloat light_diffuse[] = { 0.8f, 0.8f, 0.8f, 1.0f };    // Composante diffuse de la lumière
+GLfloat light_specular[] = { 1.0f, 1.0f, 1.0f, 1.0f };   // Composante spéculaire de la lumière
+
+void setupCamera() 
 {
-    glPushMatrix();
-
-    // Face avant
-    glScalef(0.02,0.1,0.); 
-    drawRectangle();
-    glTranslatef(0.0f, 0.0f, -0.1f);
-
-    // Face arrière
-    glScalef(0.02,0.1,0.);
-    drawRectangle();
-    glTranslatef(0.0f, 0.05f, 0.05f);
-
-    // Côté droit
-    glRotatef(90.0f, 0.0f, 1.0f, 0.0f);
-    glScalef(0.02,0.1,0.);
-    drawRectangle();
-    glTranslatef(0.0f, 0.0f, -0.02f);
-
-    // Côté gauche
-    glScalef(0.02,0.1,0.);
-    drawRectangle();
-
-    glPopMatrix();
-
-}
-
-
-void setupCamera() {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     gluPerspective(60.0, 1.0, 0.1, 100.0);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    //gluLookAt(FACE_SIZE * 2.0f, 0.0f, 0.0f,0.0f, 0.0f, 0.0f,0.0f, 1.0f, 0.0f);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);      // Positionne la lumière
+    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);        // Définit la composante ambiante
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);        // Définit la composante diffuse
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);      // Définit la composante spéculaire
+    glEnable(GL_LIGHT0);  
+    glLightfv(GL_LIGHT1, GL_POSITION, sphere_light_position);
+    glLightfv(GL_LIGHT1, GL_AMBIENT, sphere_light_ambient);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, sphere_light_diffuse);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, sphere_light_specular);
     gluLookAt(2.7f, 0.0f, 0.0f,0.0f, 0.0f, 0.0f,0.0f, 1.0f, 0.0f);
 }
 
-/*void drawCarre()
-{
-	glLoadIdentity();
-        glTranslatef(squarePosX, squarePosY, 0.0f);
-        glBegin(GL_TRIANGLE_FAN);
-            glVertex2f(-0.1f, -0.1f);
-            glVertex2f(0.1f, -0.1f);
-            glVertex2f(0.1f, 0.1f);
-            glVertex2f(-0.1f, 0.1f);
-        glEnd();
-}*/
+
+
+   
 
 void drawBase()
 {

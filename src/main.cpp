@@ -7,6 +7,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "3D_tools.h"
 #include "draw_scene.h"
+#include "menu.h"
+#include "obstacles.h"
 #include "tunnel.h"
 #include <time.h>
 #include "stb_image.h"
@@ -51,21 +53,89 @@ void onWindowResized(GLFWwindow* window, int width, int height)
 	glMatrixMode(GL_MODELVIEW);
 }
 
+void drawImage(const char* imagePath)
+{
+    int width, height, channels;
+    unsigned char* image = stbi_load(imagePath, &width, &height, &channels, STBI_rgb_alpha);
+    if (image)
+    {
+        glClear(GL_COLOR_BUFFER_BIT);
 
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
+        glOrtho(0, WINDOW_WIDTH, WINDOW_HEIGHT, 0, -1, 1); // Utilisez les dimensions de la fenêtre
+
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
+
+        glEnable(GL_TEXTURE_2D);
+        GLuint textureID;
+        glGenTextures(1, &textureID);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0);
+        glVertex2f(0.0, 0.0);
+        glTexCoord2f(1.0, 0.0);
+        glVertex2f(WINDOW_WIDTH, 0.0);
+        glTexCoord2f(1.0, 1.0);
+        glVertex2f(WINDOW_WIDTH, WINDOW_HEIGHT);
+        glTexCoord2f(0.0, 1.0);
+        glVertex2f(0.0, WINDOW_HEIGHT);
+        glEnd();
+
+        glDisable(GL_TEXTURE_2D);
+
+        glPopMatrix();
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+
+        stbi_image_free(image);
+    }
+    else
+    {
+        fprintf(stderr, "Failed to load image: %s\n", imagePath);
+    }
+}
 
 int sphereMoving  = 0; // 0:immobile et 1:mouvement
+int showMenu = 1; // 1: afficher le menu, 0: afficher le reste du jeu
 
-//int menuActive = 1; /*1: actif, 0: inactif*/ 
+
+float sphereDirection[3] = {0.0f, 0.0f, 0.0f};
+int spherePositionx = 0; 
+int spherePositiony = 0;  
+
+float dirX, dirY, dirZ, length;
 
 void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    if (action == GLFW_PRESS) {
-        switch(key) {
+    if (action == GLFW_PRESS) 
+	{
+		
+        switch(key) 
+		{
             case GLFW_KEY_SPACE:
                 sphereMoving = 1; // Inverse l'état de déplacement de la sphère
                 break;
+			case GLFW_KEY_J:
+                    if (showMenu)
+                    {
+                        showMenu = 0; // Afficher le reste du jeu
+                    }
+                    break;
+			case GLFW_KEY_ESCAPE:
+                    glfwSetWindowShouldClose(window, GLFW_TRUE); // Fermer la fenêtre
+                    break;
         }
     }
+
 }
 
 	/* Variables pour stocker la position de la souris */
@@ -83,6 +153,7 @@ float spherePosition = 0.0f;
 
 float racketPosition = 0.0f;
 
+
 void onMouseButton(GLFWwindow* window, int button, int action, int mods)
 {
 	//Gestion raquette
@@ -98,27 +169,7 @@ void onMouseButton(GLFWwindow* window, int button, int action, int mods)
         racketPosition += 0.1f; // Mettez à jour la valeur selon la distance souhaitée
     }
 
-	//gestion Menu 
-	/*if (action == GLFW_PRESS) {
-        double xpos, ypos;
-        glfwGetCursorPos(window, &xpos, &ypos);
-        
-        if (menuActive) {
-            // Vérifiez si le clic se situe dans la zone de l'option "Jouer"
-            if (xpos >= 200 && xpos <= 400 && ypos >= 200 && ypos <= 250) {
-                menuActive = 0; // Désactive le menu
-                // Ajoutez ici votre code pour lancer le jeu
-            }
-            
-            // Vérifiez si le clic se situe dans la zone de l'option "Quitter"
-            if (xpos >= 200 && xpos <= 400 && ypos >= 300 && ypos <= 350) {
-                glfwSetWindowShouldClose(window, GLFW_TRUE); // Ferme la fenêtre
-            }
-        }
-    }*/
-}
-
-
+} 
 
 
 
@@ -159,9 +210,9 @@ int main(int argc, char** argv)
 
 	glfwSetMouseButtonCallback(window, onMouseButton);
 
-	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHTING); 
 
-
+	int bloc = (rand()%4)+1; 
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window)) 
@@ -179,17 +230,16 @@ int main(int argc, char** argv)
 		glLoadIdentity();
 		setupCamera();
 
-		/*if (menuActive) {
-            // Dessinez le menu
-    
-            // Écoutez les clics de souris
-            glfwSetMouseButtonCallback(window, onMouseButton);
-        }
-        else {
-            // Dessinez le jeu
-            // ...
-        }*/
 
+		if (showMenu)
+		{
+			// Afficher le menu
+			drawImage("./doc/menu_LightCorridor.png");
+			 
+		}
+		else
+		{
+		
 		/* Scene rendering */
 		//drawFrame();
 
@@ -202,7 +252,6 @@ int main(int argc, char** argv)
 
 		/* Mettre à jour les transformations de la raquette*/
 
-		
 		glPushMatrix();
 		glColor3f(0.,1.,0.);
 		glRotatef(90., 0.,1.,0.);
@@ -215,12 +264,32 @@ int main(int argc, char** argv)
 
 		//Gestion sphère 
 
-		//Mouvement sphere quand clique droit 
+		//Mouvement sphere quand clique sur espace
 		if (sphereMoving)
 		{
-			// Mettre à jour la position de la sphère
-			spherePosition -= 0.01f; // Mettez à jour la valeur selon la vitesse souhaitée
+
+			// Générer des valeurs aléatoires pour les composantes x, y et z du vecteur de direction
+				dirX = (float)(rand() % 100 - 50) / 100.0f; // Valeur aléatoire entre -0.5 et 0.5
+				dirY = (float)(rand() % 100 - 50) / 100.0f; // Valeur aléatoire entre -0.5 et 0.5
+				dirZ = (float)(rand() % 100 - 50) / 100.0f; // Valeur aléatoire entre -0.5 et 0.5
+
+				// Normaliser le vecteur de direction pour avoir une longueur de 1
+				length = sqrt(dirX * dirX + dirY * dirY + dirZ * dirZ);
+				dirX /= length;
+				dirY /= length;
+				dirZ /= length;
+
+				// Appliquer le vecteur de direction à la sphère
+
+				sphereDirection[0] = dirX;
+				sphereDirection[1] = dirY;
+				sphereDirection[2] = dirZ;
+
+			spherePositionx += dirX * 0.000007;
+			spherePositiony += dirY * 0.000007;
+			spherePosition -= dirZ * 0.000007f; // Mettez à jour la valeur selon la vitesse souhaitée
 			glEnable(GL_LIGHT1);
+			
 		}
         else
         {
@@ -231,18 +300,30 @@ int main(int argc, char** argv)
 		glPushMatrix();
 		glColor3f(1.0f, 0.0f, 0.0f);
 		glRotatef(90., 0., 1., 0.);
-		glTranslatef(0., 0., 2.6 + spherePosition);
-		glScalef(0.01, 0.01, 0.01);
+		glTranslatef(spherePositionx*sphereDirection[0], spherePositiony*sphereDirection[1], 2.6 + spherePosition*sphereDirection[2]);
+		glScalef(0.007, 0.007, 0.007);
 		drawSphere();
 		glPopMatrix();
 
-
-	
 		//Positionnement aléatoire des obstacles 
-		//obstacle(); 
 
-
-
+			if(bloc==1)
+			{
+				obstacle1();
+			}
+			else if(bloc==2)
+			{
+				obstacle2();
+			}
+			else if(bloc==3)
+			{
+				obstacle3();
+			}
+			else if(bloc==4)
+			{
+				obstacle4();
+			}
+		}
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 
@@ -258,7 +339,10 @@ int main(int argc, char** argv)
 		}
 
 		/* Animate scenery */
-	}
+		}
+
+		
+	
 
 	glfwTerminate();
 	return 0;
