@@ -2,6 +2,8 @@
 #include "3D_tools.h"
 #include <math.h>
 #include <stdlib.h>
+#include <time.h>
+#include "stb_image.h"
 
 #define NUM_FACES 6
 #define NUM_VERTICES 4
@@ -30,6 +32,59 @@ void drawFrame()
         glVertex3f(0, 0, 10);
 
     glEnd(); 
+}
+
+void drawImage(const char* imagePath)
+{
+    glDisable(GL_LIGHTING); 
+    int width, height, channels;
+    unsigned char* image = stbi_load(imagePath, &width, &height, &channels, STBI_rgb_alpha);
+    if (image)
+    {
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
+        glOrtho(0, WINDOW_WIDTH, WINDOW_HEIGHT, 0, -1, 1); // Utilisez les dimensions de la fenêtre
+
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
+
+        glEnable(GL_TEXTURE_2D);
+        GLuint textureID;
+        glGenTextures(1, &textureID);
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, image);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        glBegin(GL_QUADS);
+        glTexCoord2f(0.0, 0.0);
+        glVertex2f(0.0, 0.0);
+        glTexCoord2f(1.0, 0.0);
+        glVertex2f(WINDOW_WIDTH, 0.0);
+        glTexCoord2f(1.0, 1.0);
+        glVertex2f(WINDOW_WIDTH, WINDOW_HEIGHT);
+        glTexCoord2f(0.0, 1.0);
+        glVertex2f(0.0, WINDOW_HEIGHT);
+        glEnd();
+
+        glDisable(GL_TEXTURE_2D);
+
+        glPopMatrix();
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+
+        stbi_image_free(image);
+    }
+    else
+    {
+        fprintf(stderr, "Failed to load image: %s\n", imagePath);
+    }
+    glEnable(GL_LIGHTING); 
 }
 
 void drawCube() {

@@ -46,5 +46,5 @@ void drawBloc4();
 
 void obstacle(); 
 
-
+void drawImage(const char* imagePath); 
 
