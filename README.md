@@ -16,7 +16,7 @@ Commandes du joueur :
 - clic gauche de la souris : la raquette avance
 - clic droit de la souris : la raquette recule 
 - clic barre ESPACE : lance la balle 
-Ainsi le joueur à la possibilité d'avancer et de reculer pour progresser dans le niveau. Dans le jeu original, le joeur avait également la possibilité d'avancer au clic de la souris.
+Ainsi le joueur à la possibilité d'avancer et de reculer pour progresser dans le niveau. Dans le jeu original, le joueur avait également la possibilité d'avancer au clic de la souris.
 
 Obstacles : 
 Les obstacles peuvent apparaître à 4 positions différentes : 
