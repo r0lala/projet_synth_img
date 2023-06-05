@@ -2,19 +2,21 @@
 
 ## Notre Projet
 
-Light Corridor est un jeu dans lequel le joueur avance dans un tunnel avec une raquette. Il doit renvoyer une balle qui rebondit sur les murs alors que des obstacles (d'autres murs) viennent entraver ça progression et renvoyer la balle sur lui.
+Light Corridor est un jeu dans lequel le joueur avance dans un tunnel avec une raquette. Il doit renvoyer une balle qui rebondit sur les murs alors que des obstacles (d'autres murs) viennent entraver ça progression et renvoyer la balle sur lui. Si la balle atteint le joueur sans qu'il parvienne à la renvoyer alors il perd.
 
 ## Fonctionnalités
 
 ### Menu : 
+Utilisation de texture pour l'affichage de l'image avec les instructions
 - press J : l'image se ferme et le jeu se lance
 - press ESCAPE : la fenêtre se ferme
 
 ### Dans le Jeu : 
 Commandes du joueur :
-- clique gauche de la souris : la raquette avance
-- clique droit de la souris : la raquette recule 
-- clique barre ESPACE : lance la balle 
+- clic gauche de la souris : la raquette avance
+- clic droit de la souris : la raquette recule 
+- clic barre ESPACE : lance la balle 
+Ainsi le joueur à la possibilité d'avancer et de reculer pour progresser dans le niveau. Dans le jeu original, le joeur avait également la possibilité d'avancer au clic de la souris.
 
 Obstacles : 
 Les obstacles peuvent apparaître à 4 positions différentes : 
@@ -22,6 +24,7 @@ Les obstacles peuvent apparaître à 4 positions différentes :
 - rectangle vertical côté droit du couloir (éloigné)
 - rectangle vertical côté droit du couloir (rapproché)
 - rectangle vertical côté gauche du couloir (éloigné)
+
 
 
 ## Difficultés
