@@ -13,5 +13,3 @@ void obstacle2();
 void obstacle3(); 
 
 void obstacle4(); 
-
-void obstacleDepart(); 

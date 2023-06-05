@@ -6,17 +6,8 @@
 #include <stdio.h>
 #include <math.h>
 
-void drawFrame();
-
-void drawBase();
-
-void drawArm();
 
 void drawCarre(); 
-
-void drawPan();
-
-void drawCadre(); 
 
 void draw(); 
 
@@ -35,14 +26,6 @@ void drawRaquette();
 void drawSphere(); 
 
 void drawSquare(); 
-
-void drawBloc1(); 
-
-void drawBloc2();
-
-void drawBloc3();
-
-void drawBloc4();
 
 void obstacle(); 
 

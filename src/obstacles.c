@@ -14,20 +14,6 @@
 static const unsigned int WINDOW_WIDTH = 1000;
 static const unsigned int WINDOW_HEIGHT = 1000;
 
-void obstacleDepart() {
-
-    glPushMatrix();
-	glColor3f(0.5f, 0.5f, 0.0f);
-    glTranslatef(-2.6,-0.1,0.2); 
-	glScalef(0.3,0.3,0.3);
-	glBegin(GL_QUADS);
-	glVertex3f(-6.0, -3.0, -1.0);
-	glVertex3f(-6.0, 1.0, -1.0);
-	glVertex3f(-6.0, 1.0, 1.0);
-	glVertex3f(-6.0, -3.0, 1.0);
-	glEnd();
-    glPopMatrix();
-}
 
 void obstacle1() {
 

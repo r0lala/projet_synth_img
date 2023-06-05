@@ -15,25 +15,6 @@ static const unsigned int WINDOW_WIDTH = 1000;
 static const unsigned int WINDOW_HEIGHT = 1000;
 
 
-
-void drawFrame()
-{
-    glBegin(GL_LINES);
-        glColor3f(10.,0.,0.);
-        glVertex3f(-10,0,0);
-        glVertex3f(10,0,0);
-
-        glColor3f(0.,10.,0.);
-        glVertex3f(0, -10, 0);
-        glVertex3f(0, 10, 0); 
-
-        glColor3f(0.,0.,10.);
-        glVertex3f(0, 0, -10);
-        glVertex3f(0, 0, 10);
-
-    glEnd(); 
-}
-
 void drawImage(const char* imagePath)
 {
     glDisable(GL_LIGHTING); 
@@ -171,17 +152,3 @@ void setupCamera()
     gluLookAt(2.7f, 0.0f, 0.0f,0.0f, 0.0f, 0.0f,0.0f, 1.0f, 0.0f);
 }
 
-
-
-   
-
-void drawBase()
-{
-    glPushMatrix();
-        glScalef(3, 3, 10);
-        glColor3f(235/255.,207/255.,52/255.);
-        drawCone(); 
-        glScalef(2,2,2);
-        drawCircle();
-    glPopMatrix();
-}

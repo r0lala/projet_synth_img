@@ -58,7 +58,6 @@ int showMenu = 1; // 1: afficher le menu, 0: afficher le reste du jeu
 // Variables pour la sphère
 int sphereMoving  = 0; // 0:immobile et 1:mouvement
 float spherePosition = 0; 
-int sphereDirection = 1;
 
 void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -114,14 +113,11 @@ void onMouseButton(GLFWwindow* window, int button, int action, int mods)
 } 
 
 
-
 int main(int argc, char** argv)
 {
 	/* GLFW initialisation */
 	GLFWwindow* window;
 	if (!glfwInit()) return -1;
-
-
 
 	/* Callback to a function if an error is rised by GLFW */
 	glfwSetErrorCallback(onError);
@@ -154,6 +150,8 @@ int main(int argc, char** argv)
 
 	glEnable(GL_LIGHTING); 
 
+	//Variable pour les obstacles 
+
 	int bloc = (rand()%4)+1; 
 
 	/* Loop until the user closes the window */
@@ -183,9 +181,8 @@ int main(int argc, char** argv)
 		{
 		
 		/* Scene rendering */
-		//drawFrame();
 
-		//Dessin du Corridor 
+		//Dessin du tunnel 
 
 		glPushMatrix();
 		drawLongTunnel(); 
@@ -209,11 +206,6 @@ int main(int argc, char** argv)
         {
 			spherePosition -= 0.007; 
 			glEnable(GL_LIGHT1);
-			if (spherePosition <= -8.5)
-			{
-				sphereDirection *= -1; // Inverser la direction du mouvement
-			}
-	
         }
 		else
 		{
@@ -225,14 +217,10 @@ int main(int argc, char** argv)
 		glPushMatrix();
 		glColor3f(1.0f, 0.0f, 0.0f);
 		glRotatef(90., 0., 1., 0.);
-		glTranslatef(0.0, -0.01, 2.6 + (spherePosition*sphereDirection));
+		glTranslatef(0.0, -0.01, 2.6 + spherePosition);
 		glScalef(0.007, 0.007, 0.007);
 		drawSphere();
 		glPopMatrix();
-
-		//Positionnement obstacle de "départ" 
-
-		obstacleDepart(); 
 
 		//Positionnement aléatoire des obstacles 
 
