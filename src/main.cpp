@@ -165,7 +165,7 @@ int main(int argc, char** argv)
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
+		/*glEnable(GL_LIGHTING);*/
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		setupCamera();
@@ -257,6 +257,7 @@ int main(int argc, char** argv)
 		}
 
 		/* Animate scenery */
+		/* glDisable(GL_LIGHTING);*/
 		}
 
 	glfwTerminate();
